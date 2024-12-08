@@ -1,31 +1,28 @@
+import { Background } from '@/background/Background';
+
+import { LandingPageLastRow } from '../feature/LandingPageLastRow';
+import { LandingPageRow } from '../feature/LandingPageRow';
 import { VerticalFeatureRow } from '../feature/VerticalFeatureRow';
 import { Section } from '../layout/Section';
 
 const VerticalFeatures = () => (
-  <Section
-    title="Your title here"
-    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus malesuada nisi tellus, non imperdiet nisi tempor at."
-  >
-    <VerticalFeatureRow
-      title="Your title here"
-      description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse bibendum, nunc non posuere consectetur, justo erat semper enim, non hendrerit dui odio id enim."
-      image="/assets/images/feature.svg"
-      imageAlt="First feature alt text"
-    />
-    <VerticalFeatureRow
-      title="Your title here"
-      description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse bibendum, nunc non posuere consectetur, justo erat semper enim, non hendrerit dui odio id enim."
-      image="/assets/images/feature2.svg"
-      imageAlt="Second feature alt text"
-      reverse
-    />
-    <VerticalFeatureRow
-      title="Your title here"
-      description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse bibendum, nunc non posuere consectetur, justo erat semper enim, non hendrerit dui odio id enim."
-      image="/assets/images/feature3.svg"
-      imageAlt="Third feature alt text"
-    />
-  </Section>
+  <Background color="bg-teal-700">
+    <Section yPadding="py-1">
+      <LandingPageRow
+        image="/assets/images/landing1.png"
+        imageAlt="First feature alt text"
+      />
+      <VerticalFeatureRow
+        title="Research Data Collaboration Web Catalogue"
+        image="/assets/images/landing2.png"
+        imageAlt="First feature alt text"
+      />
+      <LandingPageLastRow
+        image="/assets/images/landing3.png"
+        imageAlt="Second feature alt text"
+      />
+    </Section>
+  </Background>
 );
 
 export { VerticalFeatures };

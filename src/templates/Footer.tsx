@@ -1,13 +1,13 @@
-import Link from 'next/link';
+import { CenteredFooter } from '@/footer/CenteredFooter';
 
 import { Background } from '../background/Background';
-import { CenteredFooter } from '../footer/CenteredFooter';
 import { Section } from '../layout/Section';
-import { Logo } from './Logo';
 
 const Footer = () => (
-  <Background color="bg-gray-100">
-    <Section>
+  <Background color="bg-teal-700">
+    <Section yPadding="py-1">
+      <CenteredFooter></CenteredFooter>
+      {/*
       <CenteredFooter
         logo={<Logo />}
         iconList={
@@ -70,7 +70,7 @@ const Footer = () => (
             GitHub
           </Link>
         </li>
-      </CenteredFooter>
+      </CenteredFooter> */}
     </Section>
   </Background>
 );

@@ -9,15 +9,12 @@ type IVerticalFeatureRowProps = {
   reverse?: boolean;
 };
 
-const VerticalFeatureRow = (props: IVerticalFeatureRowProps) => {
+const LandingPageLastRow = (props: IVerticalFeatureRowProps) => {
   const verticalFeatureClass = className(
     'mt-10',
     'flex',
     'flex-wrap',
     'items-center',
-    {
-      'flex-row-reverse': props.reverse,
-    },
   );
 
   const router = useRouter();
@@ -28,12 +25,12 @@ const VerticalFeatureRow = (props: IVerticalFeatureRowProps) => {
         <h2 className="text-5xl font-semibold text-white">{props.title}</h2>
         <div className="mt-6 text-xl leading-9">{props.description}</div>
       </div>
-      <div className="w-full p-6 sm:w-1/4"></div>
       <div className="w-full p-6 sm:w-1/4">
         <img src={`${router.basePath}${props.image}`} alt={props.imageAlt} />
       </div>
+      <div className="w-full p-6 sm:w-1/4"></div>
     </div>
   );
 };
 
-export { VerticalFeatureRow };
+export { LandingPageLastRow };
