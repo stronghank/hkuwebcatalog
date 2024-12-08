@@ -11,7 +11,7 @@ type IVerticalFeatureRowProps = {
 
 const VerticalFeatureRow = (props: IVerticalFeatureRowProps) => {
   const verticalFeatureClass = className(
-    'mt-10',
+    'mt-1',
     'flex',
     'flex-wrap',
     'items-center',
@@ -25,12 +25,16 @@ const VerticalFeatureRow = (props: IVerticalFeatureRowProps) => {
   return (
     <div className={verticalFeatureClass}>
       <div className="w-full text-center sm:w-1/2 sm:px-1">
-        <h2 className="text-5xl font-semibold text-white">{props.title}</h2>
+        <h2 className="text-6xl font-semibold text-white">{props.title}</h2>
         <div className="mt-6 text-xl leading-9">{props.description}</div>
       </div>
       <div className="w-full p-6 sm:w-1/4"></div>
       <div className="w-full p-6 sm:w-1/4">
-        <img src={`${router.basePath}${props.image}`} alt={props.imageAlt} />
+        <img
+          src={`${router.basePath}${props.image}`}
+          alt={props.imageAlt}
+          className="size-full"
+        />
       </div>
     </div>
   );

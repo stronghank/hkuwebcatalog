@@ -2,15 +2,14 @@ import { Meta } from '../layout/Meta';
 import { AppConfig } from '../utils/AppConfig';
 import { Footer } from './Footer';
 import { Hero } from './Hero';
-import { VerticalFeatures } from './VerticalFeatures';
 
-const Base = () => (
+const Contact = () => (
   <div className="flex min-h-screen flex-col text-white antialiased">
     <Meta title={AppConfig.title} description={AppConfig.description} />
     <Hero />
-    <VerticalFeatures />
+    <div className="flex-1 bg-teal-700"> </div>
     <Footer />
   </div>
 );
 
-export { Base };
+export { Contact };

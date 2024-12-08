@@ -15,22 +15,22 @@ const Hero = () => (
           </Link>
         </li>
         <li>
-          <Link className="text-white" href="/">
+          <Link className="text-white" href="/collection">
             Library Collection
           </Link>
         </li>
         <li>
-          <Link className="text-white" href="/">
+          <Link className="text-white" href="/source">
             Source Management
           </Link>
         </li>
         <li>
-          <Link className="text-white" href="/">
+          <Link className="text-white" href="/guide">
             Guidelines & Useful Materials
           </Link>
         </li>
         <li>
-          <Link className="text-white" href="/">
+          <Link className="text-white" href="/contact">
             Contact Us
           </Link>
         </li>

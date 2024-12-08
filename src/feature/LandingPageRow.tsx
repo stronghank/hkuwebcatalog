@@ -27,7 +27,11 @@ const LandingPageRow = (props: ILandingPageRowProps) => {
       </div>
 
       <div className="w-full p-6 sm:w-3/4">
-        <img src={`${router.basePath}${props.image}`} alt={props.imageAlt} />
+        <img
+          className="size-full"
+          src={`${router.basePath}${props.image}`}
+          alt={props.imageAlt}
+        />
       </div>
     </div>
   );
