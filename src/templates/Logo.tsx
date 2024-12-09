@@ -1,16 +1,17 @@
+// import router from 'next/router';
 type ILogoProps = {
   xl?: boolean;
 };
 
 const Logo = (props: ILogoProps) => {
-  const size = props.xl ? '44' : '32';
+  // const size = props.xl ? '80' : '80';
   const fontStyle = props.xl
     ? 'font-semibold text-3xl'
     : 'font-semibold text-xl';
 
   return (
     <span className={`inline-flex items-center text-gray-900 ${fontStyle}`}>
-      <svg
+      {/* <svg
         className="mr-1 stroke-current text-primary-500"
         xmlns="http://www.w3.org/2000/svg"
         width={size}
@@ -28,6 +29,11 @@ const Logo = (props: ILogoProps) => {
         <path d="M4 20h14" />
       </svg>
       {/* {AppConfig.site_name} */}
+      <img
+        src={'/assets/images/logo.png'}
+        alt="logo"
+        className="w-70 h-12 object-cover"
+      />
     </span>
   );
 };

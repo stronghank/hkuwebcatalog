@@ -21,12 +21,12 @@ const LandingPageRow = (props: ILandingPageRowProps) => {
 
   return (
     <div className={verticalFeatureClass}>
-      <div className="w-full text-center sm:w-1/4 sm:px-6">
+      <div className="w-full text-center sm:w-1/4 sm:px-2">
         <h3 className="text-3xl font-semibold text-gray-900">{props.title}</h3>
         <div className="mt-6 text-xl leading-9">{props.description}</div>
       </div>
 
-      <div className="w-full p-6 sm:w-3/4">
+      <div className="w-full p-2 sm:w-3/4">
         <img
           className="size-full"
           src={`${router.basePath}${props.image}`}

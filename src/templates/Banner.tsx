@@ -1,21 +1,19 @@
-import Link from 'next/link';
+import { Background } from '@/background/Background';
 
-import { Button } from '../button/Button';
-import { CTABanner } from '../cta/CTABanner';
+import { BannerRow } from '../feature/BannerRow';
 import { Section } from '../layout/Section';
 
-const Banner = () => (
-  <Section>
-    <CTABanner
-      title="Lorem ipsum dolor sit amet consectetur adipisicing elit."
-      subtitle="Start your Free Trial."
-      button={
-        <Link href="https://creativedesignsguru.com/category/nextjs/">
-          <Button>Get Started</Button>
-        </Link>
-      }
-    />
-  </Section>
+const Banner = (props: any) => (
+  <div className="flex-1 bg-teal-700">
+    <Background color="bg-teal-700">
+      <Section yPadding="py-1">
+        <BannerRow
+          image={props.image} // "/assets/images/banner.png"
+          imageAlt="Banner"
+        />
+      </Section>
+    </Background>
+  </div>
 );
 
 export { Banner };

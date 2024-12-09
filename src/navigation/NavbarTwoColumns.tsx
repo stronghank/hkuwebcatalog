@@ -8,7 +8,7 @@ type INavbarProps = {
 
 const NavbarTwoColumns = (props: INavbarProps) => (
   <div className="flex flex-wrap items-center justify-between text-white">
-    <div>
+    <div className="p-4">
       <Link href="/">{props.logo}</Link>
     </div>
 
