@@ -4,7 +4,7 @@ import { BannerRow } from '../feature/BannerRow';
 import { Section } from '../layout/Section';
 
 const Banner = (props: any) => (
-  <div className="mx-auto bg-teal-700">
+  <div className="container mx-auto bg-teal-700 p-6 text-gray-700">
     <Background color="bg-teal-700">
       <Section yPadding="py-1">
         <BannerRow

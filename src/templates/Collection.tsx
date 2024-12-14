@@ -6,7 +6,7 @@ import { Footer } from './Footer';
 import { Hero } from './Hero';
 
 const Collection = () => (
-  <div className="flex min-h-screen flex-col text-white antialiased">
+  <div className="container mx-auto bg-teal-700 p-6 text-gray-700">
     <Meta title={AppConfig.title} description={AppConfig.description} />
     <Hero />
     <div className="flex-1 bg-teal-700">
