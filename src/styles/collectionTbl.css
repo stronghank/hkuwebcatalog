@@ -1,0 +1,32 @@
+.toggle-checkbox {
+  display: none;
+}
+
+.toggle-label {
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  background: #ccc;
+  border-radius: 50px;
+  position: relative;
+  cursor: pointer;
+}
+
+.toggle-span {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s ease;
+}
+
+.toggle-checkbox:checked + .toggle-label {
+  background: #66bb6a;
+}
+
+.toggle-checkbox:checked + .toggle-label .toggle-span {
+  transform: translateX(26px);
+}
