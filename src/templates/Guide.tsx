@@ -2,6 +2,7 @@ import { Meta } from '../layout/Meta';
 import { AppConfig } from '../utils/AppConfig';
 import { Banner } from './Banner';
 import { Footer } from './Footer';
+import GuideTabs from './GuideTabs';
 import { Hero } from './Hero';
 
 const Guide = () => (
@@ -10,6 +11,7 @@ const Guide = () => (
     <Hero />
     <div className="flex-1 bg-teal-700">
       <Banner image="/assets/images/banner1.png" />
+      <GuideTabs />
     </div>
     <Footer />
   </div>
