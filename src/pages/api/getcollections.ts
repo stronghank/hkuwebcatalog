@@ -1,4 +1,7 @@
-export default function handler(res: any) {
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log(req);
   const sampleData = [
     {
       Id: 1,
