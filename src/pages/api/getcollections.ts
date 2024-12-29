@@ -1,7 +1,46 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+/* eslint-disable import/no-anonymous-default-export */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable prettier/prettier */
+/* eslint-disable global-require */
+/* eslint-disable consistent-return */
+import { ConnectionPool } from 'mssql';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log(req);
+interface Config {
+  user: string | undefined;
+  password: string | undefined;
+  server: string | undefined;
+  database: string | undefined;
+  options: {
+    encrypt: boolean;
+    trustServerCertificate: boolean;
+  };
+}
+
+const config: Config = {
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  server: process.env.DB_SERVER,
+  database: process.env.DB_DATABASE,
+  options: {
+    encrypt: true,
+    trustServerCertificate: true
+  }
+};
+
+
+export default async (req:any, res:any) => {
+  try {
+    const pool = new ConnectionPool(config as any);
+    await pool.connect();
+    console.log(req);
+    const result = await pool.query`SELECT * FROM collection`;
+
+    res.status(200).json(result.recordset);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+    console.log(err.message);
+  }
+  /*
   const sampleData = [
     {
       Id: 1,
@@ -29,5 +68,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     },
   ];
 
-  res.status(200).json(sampleData);
-}
+  res.status(200).json(sampleData); */
+
+};

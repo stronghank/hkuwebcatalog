@@ -65,7 +65,7 @@ const AddDataPage: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/api/adcollection', {
+      const response = await fetch('/api/addcollection', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +138,9 @@ const AddDataPage: React.FC = () => {
               required
             >
               <option value="">Please Select</option>
-              {/* Add options here */}
+              <option value="DFMPC">
+                Department of Family Medicine and Primary Care
+              </option>
             </select>
           </div>
           <div>
