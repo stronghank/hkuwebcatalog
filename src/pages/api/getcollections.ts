@@ -32,42 +32,12 @@ export default async (req:any, res:any) => {
   try {
     const pool = new ConnectionPool(config as any);
     await pool.connect();
-    console.log(req);
+    console.log(req.body);
     const result = await pool.query`SELECT * FROM collection`;
-
-    res.status(200).json(result.recordset);
+    return res.status(200).json(result.recordset);
   } catch (err: any) {
-    res.status(500).send(err.message);
     console.log(err.message);
+    return res.status(500).send(err.message);
   }
-  /*
-  const sampleData = [
-    {
-      Id: 1,
-      Title:
-        "Health reforms to enhance the public's choices for nutritious content care in urban areas",
-      Journal: 'Family Practice',
-      DataSource: 'Cross-sectional Study',
-      Year: 2017,
-      SampleSize: 1248,
-      PrincipalInvestigator: 'T.P. Lam',
-      PIDepartment: 'Department of Family Medicine and Primary Care',
-      DOI: 'https://doi.org/10.1093/fampra/cmx033',
-    },
-    {
-      Id: 2,
-      Title:
-        'Differences in antibiotic use between patients with and without a typical doctor in Hong Kong',
-      Journal: 'BMC Pharmacology and Toxicology',
-      DataSource: 'Cross-sectional Study',
-      Year: 2015,
-      SampleSize: 271,
-      PrincipalInvestigator: 'T.P. Lam',
-      PIDepartment: 'Department of Family Medicine and Primary Care',
-      DOI: 'https://doi.org/10.1186/s40545-015-0043-6',
-    },
-  ];
-
-  res.status(200).json(sampleData); */
 
 };

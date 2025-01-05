@@ -20,6 +20,7 @@ interface FormData {
   dataSource: string;
   sampleSize: string;
   doi: string;
+  abstract: string;
 }
 
 const AddDataPage: React.FC = () => {
@@ -35,10 +36,13 @@ const AddDataPage: React.FC = () => {
     dataSource: '',
     sampleSize: '',
     doi: '',
+    abstract: '',
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setData((prevData) => ({
@@ -80,6 +84,7 @@ const AddDataPage: React.FC = () => {
           dataSource: data.dataSource,
           sampleSize: parseInt(data.sampleSize, 10), // Ensure sample size is a number
           doi: data.doi,
+          abstract: data.abstract,
         }),
       });
 
@@ -99,6 +104,7 @@ const AddDataPage: React.FC = () => {
           dataSource: '',
           sampleSize: '',
           doi: '',
+          abstract: '',
         });
       } else {
         console.error(
@@ -251,6 +257,16 @@ const AddDataPage: React.FC = () => {
               value={data.doi}
               onChange={handleChange}
               className="w-full rounded border border-gray-300 p-2 text-gray-700"
+            />
+          </div>
+          <div className="col-span-2">
+            <label className="mb-1 block">Abstract</label>
+            <textarea
+              name="abstract"
+              value={data.abstract}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+              rows={5}
             />
           </div>
         </div>
