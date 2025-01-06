@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Define the type for authors
 interface Author {
@@ -23,7 +23,7 @@ interface FormData {
   abstract: string;
 }
 
-const AddDataPage: React.FC = () => {
+const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
   const [data, setData] = useState<FormData>({
     principalInvestigator: '',
     piDepartment: '',
@@ -38,6 +38,52 @@ const AddDataPage: React.FC = () => {
     doi: '',
     abstract: '',
   });
+
+  // Fetch data on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/getcollection/${id}`);
+        if (response.ok) {
+          const fetchedData = await response.json();
+          // Convert authors to authorsList format
+          const authorArray = JSON.parse(fetchedData[0].Authors);
+          const authorsList: Author[] = Array.isArray(authorArray)
+            ? authorArray.map((author: { name: string; email: string }) => ({
+                name: author.name,
+                email: author.email,
+              }))
+            : []; // Fallback to an empty array if authors is not an array
+          // Set the form state with fetched data
+          console.log(fetchedData[0].Authors);
+          setData({
+            principalInvestigator: fetchedData[0].PrincipalInvestigator,
+            piDepartment: fetchedData[0].PIDepartment,
+            title: fetchedData[0].Title,
+            year: fetchedData[0].Year.toString(), // Convert year to string
+            authorName: '',
+            authorEmail: '',
+            authorsList,
+            journal: fetchedData.Journal,
+            dataSource: fetchedData.DataSource,
+            sampleSize: fetchedData[0].SampleSize.toString(), // Convert sample size to string
+            doi: fetchedData[0].DOI,
+            abstract: fetchedData[0].Abstract,
+          });
+        } else {
+          console.error(
+            'Failed to fetch data',
+            response.status,
+            response.statusText,
+          );
+        }
+      } catch (error) {
+        console.error('Error while fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [id]); // Only re-run the effect if id changes
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -121,17 +167,17 @@ const AddDataPage: React.FC = () => {
   return (
     <div className="mx-auto max-w-5xl p-6 text-white">
       <div className="flex items-center justify-between">
-        <h1 className="mb-4 text-2xl font-bold">Add Research Data</h1>
+        <h1 className="mb-4 text-2xl font-bold">Edit Research Data</h1>
         <button
           type="button"
           className="rounded bg-green-500 px-4 py-2 text-white"
           // eslint-disable-next-line no-return-assign
           onClick={() => (window.location.href = '/managesource')}
         >
-          Manage Your Source
+          Back
         </button>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4 ">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="mb-1 block">Principal Investigator (PI) *</label>
@@ -223,7 +269,7 @@ const AddDataPage: React.FC = () => {
                 ))}
               </ul>
             ) : (
-              <p className="text-gray-500">No authors added yet.</p> // Optional message when empty
+              <p className="text-gray-500">No authors added yet.</p>
             )}
           </div>
           <div>
