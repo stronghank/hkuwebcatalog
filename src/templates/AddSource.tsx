@@ -1,5 +1,9 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/no-unescaped-entities */
+import 'react-toastify/dist/ReactToastify.css';
+
 import React, { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
 
 // Define the type for authors
 interface Author {
@@ -91,6 +95,7 @@ const AddDataPage: React.FC = () => {
       if (response.ok) {
         const result = await response.json();
         console.log('Data saved successfully:', result);
+        toast.success('Data saved successfully!'); // Show success message
         // Optionally reset the form or show a success message
         setData({
           principalInvestigator: '',
@@ -112,6 +117,7 @@ const AddDataPage: React.FC = () => {
           response.status,
           response.statusText,
         );
+        toast.error('Failed to save data. Please try again.'); // Show error message
       }
     } catch (error) {
       console.error('Error while saving data:', error);
@@ -290,6 +296,7 @@ const AddDataPage: React.FC = () => {
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };

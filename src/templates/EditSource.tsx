@@ -1,5 +1,11 @@
 /* eslint-disable react/no-unescaped-entities */
+/* eslint-disable import/no-extraneous-dependencies */
+import 'react-toastify/dist/ReactToastify.css';
+
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { toast, ToastContainer } from 'react-toastify';
 
 // Define the type for authors
 interface Author {
@@ -39,6 +45,8 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
     abstract: '',
   });
 
+  const router = useRouter(); // Initialize router
+
   // Fetch data on component mount
   useEffect(() => {
     const fetchData = async () => {
@@ -46,27 +54,24 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
         const response = await fetch(`/api/getcollection/${id}`);
         if (response.ok) {
           const fetchedData = await response.json();
-          // Convert authors to authorsList format
           const authorArray = JSON.parse(fetchedData[0].Authors);
           const authorsList: Author[] = Array.isArray(authorArray)
             ? authorArray.map((author: { name: string; email: string }) => ({
                 name: author.name,
                 email: author.email,
               }))
-            : []; // Fallback to an empty array if authors is not an array
-          // Set the form state with fetched data
-          console.log(fetchedData[0].Authors);
+            : [];
           setData({
             principalInvestigator: fetchedData[0].PrincipalInvestigator,
             piDepartment: fetchedData[0].PIDepartment,
             title: fetchedData[0].Title,
-            year: fetchedData[0].Year.toString(), // Convert year to string
+            year: fetchedData[0].Year.toString(),
             authorName: '',
             authorEmail: '',
             authorsList,
-            journal: fetchedData.Journal,
-            dataSource: fetchedData.DataSource,
-            sampleSize: fetchedData[0].SampleSize.toString(), // Convert sample size to string
+            journal: fetchedData[0].Journal,
+            dataSource: fetchedData[0].DataSource,
+            sampleSize: fetchedData[0].SampleSize.toString(),
             doi: fetchedData[0].DOI,
             abstract: fetchedData[0].Abstract,
           });
@@ -83,7 +88,7 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
     };
 
     fetchData();
-  }, [id]); // Only re-run the effect if id changes
+  }, [id]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -115,20 +120,21 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/api/addcollection', {
-        method: 'POST',
+      const response = await fetch('/api/updcollection', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          id: Number(id),
           principalInvestigator: data.principalInvestigator,
           piDepartment: data.piDepartment,
           title: data.title,
-          year: parseInt(data.year, 10), // Ensure year is a number
+          year: parseInt(data.year, 10),
           authors: data.authorsList,
           journal: data.journal,
           dataSource: data.dataSource,
-          sampleSize: parseInt(data.sampleSize, 10), // Ensure sample size is a number
+          sampleSize: parseInt(data.sampleSize, 10),
           doi: data.doi,
           abstract: data.abstract,
         }),
@@ -137,35 +143,27 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
       if (response.ok) {
         const result = await response.json();
         console.log('Data saved successfully:', result);
-        // Optionally reset the form or show a success message
-        setData({
-          principalInvestigator: '',
-          piDepartment: '',
-          title: '',
-          year: '',
-          authorName: '',
-          authorEmail: '',
-          authorsList: [],
-          journal: '',
-          dataSource: '',
-          sampleSize: '',
-          doi: '',
-          abstract: '',
-        });
+        toast.success('Data saved successfully!'); // Show success notification
+        setTimeout(() => {
+          router.push('/managesource'); // Redirect to home page after a short delay
+        }, 2000);
       } else {
         console.error(
           'Failed to save data',
           response.status,
           response.statusText,
         );
+        toast.error('Failed to save data. Please try again.'); // Show error notification
       }
     } catch (error) {
       console.error('Error while saving data:', error);
+      toast.error('Error while saving data. Please check your connection.'); // Show error notification
     }
   };
 
   return (
     <div className="mx-auto max-w-5xl p-6 text-white">
+      <ToastContainer /> {/* Container for toast notifications */}
       <div className="flex items-center justify-between">
         <h1 className="mb-4 text-2xl font-bold">Edit Research Data</h1>
         <button

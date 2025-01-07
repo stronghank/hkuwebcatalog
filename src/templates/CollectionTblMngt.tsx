@@ -1,4 +1,7 @@
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
 import { useEffect, useState } from 'react';
+import { confirmAlert } from 'react-confirm-alert';
 
 interface ResearchData {
   Id: number;
@@ -99,35 +102,51 @@ const DataPage: React.FC = () => {
 
   const handleDeleteSelected = async () => {
     if (selectedIds.size === 0) return;
+    confirmAlert({
+      title: 'Confirm Delete',
+      message:
+        'Are you sure you want to delete the selected items? This action cannot be undone.',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            const idsToDelete = Array.from(selectedIds);
+            try {
+              const response = await fetch('/api/delcollections', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ids: idsToDelete }),
+              });
 
-    const idsToDelete = Array.from(selectedIds);
+              if (!response.ok) {
+                throw new Error('Failed to delete selected items');
+              }
 
-    try {
-      const response = await fetch('/api/delcollections', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+              // Update local state to remove deleted items
+              setData((prevData) =>
+                prevData.filter((item) => !selectedIds.has(item.Id)),
+              );
+              setSelectedIds(new Set()); // Clear selected IDs after deletion
+            } catch (err) {
+              console.log(err);
+              setError(
+                err instanceof Error
+                  ? err.message
+                  : 'An error occurred during deletion',
+              );
+            }
+          },
         },
-        body: JSON.stringify({ ids: idsToDelete }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete selected items');
-      }
-
-      // Update local state to remove deleted items
-      setData((prevData) =>
-        prevData.filter((item) => !selectedIds.has(item.Id)),
-      );
-      setSelectedIds(new Set()); // Clear selected IDs after deletion
-    } catch (err) {
-      console.log(err);
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'An error occurred during deletion',
-      );
-    }
+        {
+          label: 'No',
+          onClick: () => {
+            // Do nothing on cancel
+          },
+        },
+      ],
+    });
   };
 
   const handleEditClick = (id: number) => {
