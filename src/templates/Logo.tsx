@@ -12,7 +12,7 @@ const Logo = (props: ILogoProps) => {
   return (
     <div className={`flex items-center text-gray-900 ${fontStyle}`}>
       <img
-        src={'/assets/images/logo.png'}
+        src={`${process.env.NEXT_PUBLIC_SUB_PATH}/assets/images/logo.png`}
         alt="logo"
         className="h-16 w-auto object-contain"
       />

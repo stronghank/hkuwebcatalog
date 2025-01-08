@@ -73,24 +73,27 @@ const AddDataPage: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/api/addcollection', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SUB_PATH}/api/addcollection`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            principalInvestigator: data.principalInvestigator,
+            piDepartment: data.piDepartment,
+            title: data.title,
+            year: parseInt(data.year, 10), // Ensure year is a number
+            authors: data.authorsList,
+            journal: data.journal,
+            dataSource: data.dataSource,
+            sampleSize: parseInt(data.sampleSize, 10), // Ensure sample size is a number
+            doi: data.doi,
+            abstract: data.abstract,
+          }),
         },
-        body: JSON.stringify({
-          principalInvestigator: data.principalInvestigator,
-          piDepartment: data.piDepartment,
-          title: data.title,
-          year: parseInt(data.year, 10), // Ensure year is a number
-          authors: data.authorsList,
-          journal: data.journal,
-          dataSource: data.dataSource,
-          sampleSize: parseInt(data.sampleSize, 10), // Ensure sample size is a number
-          doi: data.doi,
-          abstract: data.abstract,
-        }),
-      });
+      );
 
       if (response.ok) {
         const result = await response.json();
@@ -132,7 +135,9 @@ const AddDataPage: React.FC = () => {
           type="button"
           className="rounded bg-green-500 px-4 py-2 text-white"
           // eslint-disable-next-line no-return-assign
-          onClick={() => (window.location.href = '/managesource')}
+          onClick={() =>
+            (window.location.href = `${process.env.NEXT_PUBLIC_SUB_PATH}/managesource`)
+          }
         >
           Manage Your Source
         </button>

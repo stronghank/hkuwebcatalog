@@ -35,7 +35,8 @@ const DataPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/getcollections');
+        const subPath = process.env.NEXT_PUBLIC_SUB_PATH;
+        const response = await fetch(`${subPath}/api/getcollections`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -240,7 +241,7 @@ const DataPage: React.FC = () => {
                   </td>
                   <td className="border border-gray-300 p-2 text-center text-gray-800">
                     <a
-                      href={`/detail/${item.Id}`}
+                      href={`${process.env.NEXT_PUBLIC_SUB_PATH}/detail/${item.Id}`}
                       className="text-blue-600 hover:text-blue-800"
                     >
                       <svg

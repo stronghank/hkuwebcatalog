@@ -51,7 +51,9 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/getcollection/${id}`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SUB_PATH}/api/getcollection/${id}`,
+        );
         if (response.ok) {
           const fetchedData = await response.json();
           const authorArray = JSON.parse(fetchedData[0].Authors);
@@ -120,25 +122,28 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/api/updcollection', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SUB_PATH}/api/updcollection`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: Number(id),
+            principalInvestigator: data.principalInvestigator,
+            piDepartment: data.piDepartment,
+            title: data.title,
+            year: parseInt(data.year, 10),
+            authors: data.authorsList,
+            journal: data.journal,
+            dataSource: data.dataSource,
+            sampleSize: parseInt(data.sampleSize, 10),
+            doi: data.doi,
+            abstract: data.abstract,
+          }),
         },
-        body: JSON.stringify({
-          id: Number(id),
-          principalInvestigator: data.principalInvestigator,
-          piDepartment: data.piDepartment,
-          title: data.title,
-          year: parseInt(data.year, 10),
-          authors: data.authorsList,
-          journal: data.journal,
-          dataSource: data.dataSource,
-          sampleSize: parseInt(data.sampleSize, 10),
-          doi: data.doi,
-          abstract: data.abstract,
-        }),
-      });
+      );
 
       if (response.ok) {
         const result = await response.json();
@@ -170,7 +175,9 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
           type="button"
           className="rounded bg-green-500 px-4 py-2 text-white"
           // eslint-disable-next-line no-return-assign
-          onClick={() => (window.location.href = '/managesource')}
+          onClick={() =>
+            (window.location.href = `${process.env.NEXT_PUBLIC_SUB_PATH}/managesource`)
+          }
         >
           Back
         </button>

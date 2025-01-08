@@ -27,7 +27,9 @@ const DetailedPage: React.FC<DetailedPageProps> = ({ id }) => {
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
-        const response = await fetch(`/api/getcollection/${id}`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SUB_PATH}/api/getcollection/${id}`,
+        );
         if (response.ok) {
           const result = await response.json();
           setData(result[0]);

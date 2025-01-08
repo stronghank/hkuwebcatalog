@@ -36,7 +36,8 @@ const DataPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/getcollections');
+        const subPath = process.env.NEXT_PUBLIC_SUB_PATH;
+        const response = await fetch(`${subPath}/api/getcollections`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -112,13 +113,16 @@ const DataPage: React.FC = () => {
           onClick: async () => {
             const idsToDelete = Array.from(selectedIds);
             try {
-              const response = await fetch('/api/delcollections', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
+              const response = await fetch(
+                `${process.env.NEXT_PUBLIC_SUB_PATH}/api/delcollections`,
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ ids: idsToDelete }),
                 },
-                body: JSON.stringify({ ids: idsToDelete }),
-              });
+              );
 
               if (!response.ok) {
                 throw new Error('Failed to delete selected items');
@@ -150,7 +154,7 @@ const DataPage: React.FC = () => {
   };
 
   const handleEditClick = (id: number) => {
-    window.location.href = `/edit/${id}`; // Navigate to the edit page
+    window.location.href = `${process.env.NEXT_PUBLIC_SUB_PATH}/edit/${id}`; // Navigate to the edit page
   };
 
   return (
