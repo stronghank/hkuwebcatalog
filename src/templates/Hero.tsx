@@ -1,60 +1,65 @@
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { Background } from '../background/Background';
 import { Section } from '../layout/Section';
 import { NavbarTwoColumns } from '../navigation/NavbarTwoColumns';
 import { Logo } from './Logo';
 
-const Hero = () => (
-  <Background color="bg-teal-700">
-    <Section yPadding="py-0">
-      <NavbarTwoColumns logo={<Logo xl />}>
-        <li>
-          <Link className="text-white" href="/">
-            Home
-          </Link>
-        </li>
-        <li>
-          <Link className="text-white" href="/collection">
-            Library Collection
-          </Link>
-        </li>
-        <li>
-          <Link className="text-white" href="/source">
-            Source Management
-          </Link>
-        </li>
-        <li>
-          <Link className="text-white" href="/guide">
-            Guidelines & Useful Materials
-          </Link>
-        </li>
-        <li>
-          <Link className="text-white" href="/contact">
-            Contact Us
-          </Link>
-        </li>
-      </NavbarTwoColumns>
-    </Section>
-    {/* }
-    <Section yPadding="pt-20 pb-32">
-      <HeroOneButton
-        title={
-          <>
-            {'The modern landing page for\n'}
-            <span className="text-primary-500">React developers</span>
-          </>
-        }
-        description="The easiest way to build a React landing page in seconds."
-        button={
-          <Link href="https://creativedesignsguru.com/category/nextjs/">
-            <Button xl>Download Your Free Theme</Button>
-          </Link>
-        }
-      />
-    </Section>
-    */}
-  </Background>
-);
+const Hero = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
+
+  return (
+    <Background color="bg-teal-700">
+      <Section yPadding="py-0">
+        <NavbarTwoColumns logo={<Logo xl />}>
+          <li>
+            <Link className="text-white" href="/">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link className="text-white" href="/collection">
+              Library Collection
+            </Link>
+          </li>
+          <li>
+            <Link className="text-white" href="/source">
+              Source Management
+            </Link>
+          </li>
+          <li>
+            <Link className="text-white" href="/guide">
+              Guidelines & Useful Materials
+            </Link>
+          </li>
+          <li>
+            <Link className="text-white" href="/contact">
+              Contact Us
+            </Link>
+          </li>
+          <li className="ml-auto">
+            {isLoggedIn ? (
+              <button onClick={handleLogout} className="text-white">
+                Logout
+              </button>
+            ) : (
+              <button onClick={handleLogin} className="text-white">
+                Login
+              </button>
+            )}
+          </li>
+        </NavbarTwoColumns>
+      </Section>
+    </Background>
+  );
+};
 
 export { Hero };

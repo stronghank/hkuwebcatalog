@@ -32,11 +32,15 @@ export default async (req:any, res:any) => {
   try {
     const pool = new ConnectionPool(config as any);
     await pool.connect();
-    console.log(req.body);
-    const result = await pool.query`SELECT * FROM collection`;
+    const { ids } = req.body;
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: 'No IDs provided.' });
+    }
+    const idList = ids.join(','); 
+    const query = `DELETE FROM collection WHERE Id IN (${idList})`;
+    const result = await pool.query(query);
     return res.status(200).json(result.recordset);
   } catch (err: any) {
-    console.log(err.message);
     return res.status(500).send(err.message);
   }
 

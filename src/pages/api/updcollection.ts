@@ -27,10 +27,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method === 'POST') {
+  if (req.method === 'PUT') {
     console.log(req.body);
     try {
       const {
+        id,
         principalInvestigator,
         piDepartment,
         title,
@@ -45,6 +46,7 @@ export default async function handler(
 
       // Validate input
       if (
+        typeof id !== 'number' ||
         typeof principalInvestigator !== 'string' ||
         typeof piDepartment !== 'string' ||
         typeof title !== 'string' ||
@@ -60,6 +62,7 @@ export default async function handler(
       // Connect to the database
       await sql.connect(config as any);
       const ps = new sql.PreparedStatement();
+      ps.input('id', sql.Int);
       ps.input('principalInvestigator', sql.VarChar);
       ps.input('piDepartment', sql.VarChar);
       ps.input('title', sql.VarChar);
@@ -72,12 +75,24 @@ export default async function handler(
       ps.input('abstract', sql.VarChar);
 
       await ps.prepare(`
-        INSERT INTO collection (principalInvestigator, piDepartment, title, year, authors, journal, dataSource, sampleSize, doi, abstract)
-        VALUES (@principalInvestigator, @piDepartment, @title, @year, @authors, @journal, @dataSource, @sampleSize, @doi, @abstract)
+        UPDATE collection
+        SET 
+          principalInvestigator = @principalInvestigator,
+          piDepartment = @piDepartment,
+          title = @title,
+          year = @year,
+          authors = @authors,
+          journal = @journal,
+          dataSource = @dataSource,
+          sampleSize = @sampleSize,
+          doi = @doi,
+          abstract = @abstract
+        WHERE id = @id
       `);
 
       // Execute the statement with actual values
       await ps.execute({
+        id,
         principalInvestigator,
         piDepartment,
         title,
@@ -90,13 +105,13 @@ export default async function handler(
         abstract,
       });
 
-      return res.status(201).json({ message: 'Research entry created' });
+      return res.status(200).json({ message: 'Research entry updated' });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: 'Internal server error' });
     }
   } else {
-    res.setHeader('Allow', ['POST']);
+    res.setHeader('Allow', ['PUT']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

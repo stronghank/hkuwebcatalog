@@ -30,7 +30,7 @@ const DetailedPage: React.FC<DetailedPageProps> = ({ id }) => {
         const response = await fetch(`/api/getcollection/${id}`);
         if (response.ok) {
           const result = await response.json();
-          setData(result);
+          setData(result[0]);
         } else {
           console.error('Failed to fetch data');
         }
