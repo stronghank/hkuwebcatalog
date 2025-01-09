@@ -168,6 +168,7 @@ const AddDataPage: React.FC = () => {
               <option value="DFMPC">
                 Department of Family Medicine and Primary Care
               </option>
+              <option value="DCM">Department of Clinical Medicine</option>
             </select>
           </div>
           <div>

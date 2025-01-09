@@ -71,7 +71,13 @@ const DetailedPage: React.FC<DetailedPageProps> = ({ id }) => {
           <strong>Sample Size:</strong> {data.SampleSize}
         </p>
         <p className="text-gray-700">
-          <strong>Authors:</strong> {data.Authors}
+          <strong>Authors:</strong>{' '}
+          {JSON.parse(data.Authors).map((author: any, index: any) => (
+            <span key={index}>
+              {author.name} ({author.email})
+              {index < data.Authors.length - 1 ? ', ' : ''}
+            </span>
+          ))}
         </p>
         <p className="text-gray-700">
           <strong>Status:</strong> {data.Status}
