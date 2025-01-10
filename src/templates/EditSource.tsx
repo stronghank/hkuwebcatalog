@@ -29,6 +29,12 @@ interface FormData {
   abstract: string;
 }
 
+interface Department {
+  ID: number;
+  Name: string;
+  ShortName: string;
+}
+
 const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
   const [data, setData] = useState<FormData>({
     principalInvestigator: '',
@@ -44,6 +50,26 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
     doi: '',
     abstract: '',
   });
+
+  const [departments, setDepartments] = useState<Department[]>([]);
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SUB_PATH}/api/getDepartment`,
+        ); // Adjust the API endpoint as needed
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const deptlist: Department[] = await response.json();
+        setDepartments(deptlist);
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
 
   const router = useRouter(); // Initialize router
 
@@ -103,9 +129,22 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
       [name]: value,
     }));
   };
-
+  const [emailError, setEmailError] = useState('');
+  function validateEmail(email: string) {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(String(email).toLowerCase());
+  }
   const addAuthor = () => {
     if (data.authorName && data.authorEmail) {
+      // Validate email format
+      if (!validateEmail(data.authorEmail)) {
+        // Set the email error message
+        setEmailError('Please enter a valid email address.');
+        return;
+      }
+
+      // Clear email error message if email format is valid
+      setEmailError('');
       setData((prevData) => ({
         ...prevData,
         authorsList: [
@@ -205,9 +244,11 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
               required
             >
               <option value="">Please Select</option>
-              <option value="DFMPC">
-                Department of Family Medicine and Primary Care
-              </option>
+              {departments.map((department) => (
+                <option key={department.ID} value={department.Name}>
+                  {department.Name}
+                </option>
+              ))}
             </select>
           </div>
           <div>
@@ -224,58 +265,75 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
           <div>
             <label className="mb-1 block">Year *</label>
             <input
-              type="number"
+              type="text"
               name="year"
               value={data.year}
               onChange={handleChange}
+              placeholder="YYYY"
+              maxLength={4}
+              pattern="\d{4}"
+              title="Please enter a valid year (YYYY)"
               className="w-full rounded border border-gray-300 p-2 text-gray-700"
               required
             />
           </div>
-          <div>
-            <label className="mb-1 block">Author Name</label>
-            <input
-              type="text"
-              name="authorName"
-              value={data.authorName}
-              onChange={handleChange}
-              className="w-full rounded border border-gray-300 p-2 text-gray-700"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block">Author&apos;s Email Address</label>
-            <input
-              type="email"
-              name="authorEmail"
-              value={data.authorEmail}
-              onChange={handleChange}
-              className="w-full rounded border border-gray-300 p-2 text-gray-700"
-            />
-          </div>
-          <div className="col-span-2">
-            <button
-              type="button"
-              onClick={addAuthor}
-              className="mt-2 rounded bg-blue-600 px-4 py-2 text-white"
-            >
-              Add Author
-            </button>
-          </div>
-          <div className="col-span-2">
-            <h2 className="text-lg font-semibold">Authors' List</h2>
-            {data.authorsList.length > 0 ? (
-              <ul className="rounded border border-gray-300 p-2">
-                {data.authorsList.map((author, index) => (
-                  <li key={index} className="flex justify-between">
-                    <span>
-                      {author.name} ({author.email})
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-500">No authors added yet.</p>
-            )}
+          <div className="col-span-2 rounded border border-gray-200 p-4">
+            <div className="flex justify-between">
+              <div>
+                <h2 className="text-lg font-semibold">Authors' List</h2>
+                {data.authorsList.length > 0 ? (
+                  <ul className="rounded border border-gray-300 p-2">
+                    {data.authorsList.map((author, index) => (
+                      <li key={index} className="flex justify-between">
+                        <span>
+                          {author.name} ({author.email})
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-500">No authors added yet.</p>
+                )}
+              </div>
+              <div>
+                <button
+                  type="button"
+                  onClick={addAuthor}
+                  className="mt-2 rounded bg-blue-600 px-4 py-2 text-white"
+                >
+                  Add Author
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap">
+              <div className="w-full px-2 md:w-1/2">
+                <label className="mb-1 block">Author Name</label>
+                <input
+                  type="text"
+                  name="authorName"
+                  value={data.authorName}
+                  onChange={handleChange}
+                  className="w-full rounded border border-gray-300 p-2 text-gray-700"
+                />
+              </div>
+
+              <div className="w-full px-2 md:w-1/2">
+                <label className="mb-1 block">Author's Email Address</label>
+                <input
+                  type="email"
+                  name="authorEmail"
+                  value={data.authorEmail}
+                  onChange={handleChange}
+                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                  title="Please enter a valid email address"
+                  className="w-full rounded border border-gray-300 p-2 text-gray-700"
+                />
+                {emailError && (
+                  <p className="text-sm text-red-500">{emailError}</p>
+                )}
+              </div>
+            </div>
           </div>
           <div>
             <label className="mb-1 block">Journal *</label>
