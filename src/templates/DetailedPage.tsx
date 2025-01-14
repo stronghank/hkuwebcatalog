@@ -3,16 +3,19 @@ import { useEffect, useState } from 'react';
 // Define the data structure type
 interface ResearchData {
   Id: number;
+  Index: number;
+  Journal: string;
   Title: string;
+  Year: number;
+  Abstract: string;
   PrincipalInvestigator: string;
   PIDepartment: string;
-  Journal: string;
-  Year: number;
+  PIRemarks: string;
   DataSource: string;
-  SampleSize: number;
+  Population: string;
+  SampleSize: string;
+  Remark: string;
   DOI: string;
-  Abstract: string;
-  Background: string; // Added for better visualization
   Authors: string; // Added for better visualization
   Status: string; // Added for better visualization
 }
@@ -71,33 +74,43 @@ const DetailedPage: React.FC<DetailedPageProps> = ({ id }) => {
           <strong>Sample Size:</strong> {data.SampleSize}
         </p>
         <p className="text-gray-700">
-          <strong>Authors:</strong>{' '}
-          {JSON.parse(data.Authors).map((author: any, index: any) => (
-            <span key={index}>
-              {author.name} ({author.email})
-              {index < data.Authors.length - 1 ? ', ' : ''}
-            </span>
-          ))}
+          <strong>Polulation:</strong> {data.Population}
+        </p>
+        {data.Authors && JSON.parse(data.Authors).length > 0 && (
+          <p className="text-gray-700">
+            <strong>Authors:</strong>{' '}
+            {JSON.parse(data.Authors).map((author: any, index: any) => (
+              <span key={index}>
+                {author.name} ({author.email})
+                {index < JSON.parse(data.Authors).length - 1 ? ', ' : ''}
+              </span>
+            ))}
+          </p>
+        )}
+        <p className="text-gray-700">
+          <strong>PIRemarks:</strong> {data.PIRemarks}
         </p>
         <p className="text-gray-700">
-          <strong>Status:</strong> {data.Status}
+          <strong>Feasibility of sharing:</strong> {data.Remark}
         </p>
       </div>
 
       <h2 className="mb-2 mt-6 text-xl font-semibold">Abstract</h2>
       <p className="mb-4 text-gray-700">{data.Abstract}</p>
 
-      <div className="mt-6">
-        <span className="font-semibold">DOI:</span>
-        <a
-          href={data.DOI}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ml-1 text-blue-600 hover:underline"
-        >
-          {data.DOI}
-        </a>
-      </div>
+      {data.Authors && (
+        <div className="mt-6">
+          <span className="font-semibold">DOI:</span>
+          <a
+            href={data.DOI}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-1 text-blue-600 hover:underline"
+          >
+            {data.DOI}
+          </a>
+        </div>
+      )}
     </div>
   );
 };

@@ -15,18 +15,22 @@ interface Author {
 
 // Define the type for the form data
 interface FormData {
-  principalInvestigator: string;
-  piDepartment: string;
+  index: string;
+  journal: string;
   title: string;
   year: string;
+  abstract: string;
+  principalInvestigator: string;
+  piDepartment: string;
+  piRemarks: string;
+  dataSource: string;
+  population: string;
+  sampleSize: string;
+  remark: string;
+  doi: string;
   authorName: string;
   authorEmail: string;
   authorsList: Author[];
-  journal: string;
-  dataSource: string;
-  sampleSize: string;
-  doi: string;
-  abstract: string;
 }
 
 interface Department {
@@ -37,18 +41,22 @@ interface Department {
 
 const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
   const [data, setData] = useState<FormData>({
-    principalInvestigator: '',
-    piDepartment: '',
+    index: '',
+    journal: '',
     title: '',
     year: '',
+    abstract: '',
+    principalInvestigator: '',
+    piDepartment: '',
+    piRemarks: '',
+    dataSource: '',
+    population: '',
+    sampleSize: '',
+    remark: '',
+    doi: '',
     authorName: '',
     authorEmail: '',
     authorsList: [],
-    journal: '',
-    dataSource: '',
-    sampleSize: '',
-    doi: '',
-    abstract: '',
   });
 
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -90,18 +98,22 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
               }))
             : [];
           setData({
+            index: fetchedData[0].Index ? fetchedData[0].Index.toString() : '',
+            journal: fetchedData[0].Journal,
+            title: fetchedData[0].Title,
+            year: fetchedData[0].Year ? fetchedData[0].Year.toString() : '',
+            abstract: fetchedData[0].Abstract,
             principalInvestigator: fetchedData[0].PrincipalInvestigator,
             piDepartment: fetchedData[0].PIDepartment,
-            title: fetchedData[0].Title,
-            year: fetchedData[0].Year.toString(),
+            piRemarks: fetchedData[0].PIRemarks,
+            dataSource: fetchedData[0].DataSource,
+            population: fetchedData[0].Population,
+            sampleSize: fetchedData[0].SampleSize,
+            remark: fetchedData[0].Remark,
+            doi: fetchedData[0].DOI,
             authorName: '',
             authorEmail: '',
             authorsList,
-            journal: fetchedData[0].Journal,
-            dataSource: fetchedData[0].DataSource,
-            sampleSize: fetchedData[0].SampleSize.toString(),
-            doi: fetchedData[0].DOI,
-            abstract: fetchedData[0].Abstract,
           });
         } else {
           console.error(
@@ -135,9 +147,9 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
     return re.test(String(email).toLowerCase());
   }
   const addAuthor = () => {
-    if (data.authorName && data.authorEmail) {
+    if (data.authorName) {
       // Validate email format
-      if (!validateEmail(data.authorEmail)) {
+      if (data.authorEmail && !validateEmail(data.authorEmail)) {
         // Set the email error message
         setEmailError('Please enter a valid email address.');
         return;
@@ -170,16 +182,20 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
           },
           body: JSON.stringify({
             id: Number(id),
-            principalInvestigator: data.principalInvestigator,
-            piDepartment: data.piDepartment,
+            index: parseInt(data.index, 10),
+            journal: data.journal,
             title: data.title,
             year: parseInt(data.year, 10),
-            authors: data.authorsList,
-            journal: data.journal,
-            dataSource: data.dataSource,
-            sampleSize: parseInt(data.sampleSize, 10),
-            doi: data.doi,
             abstract: data.abstract,
+            principalInvestigator: data.principalInvestigator,
+            piDepartment: data.piDepartment,
+            piRemarks: data.piRemarks,
+            dataSource: data.dataSource,
+            population: data.population,
+            sampleSize: data.sampleSize,
+            remark: data.remark,
+            doi: data.doi,
+            authors: data.authorsList,
           }),
         },
       );
@@ -277,64 +293,7 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
               required
             />
           </div>
-          <div className="col-span-2 rounded border border-gray-200 p-4">
-            <div className="flex justify-between">
-              <div>
-                <h2 className="text-lg font-semibold">Authors' List</h2>
-                {data.authorsList.length > 0 ? (
-                  <ul className="rounded border border-gray-300 p-2">
-                    {data.authorsList.map((author, index) => (
-                      <li key={index} className="flex justify-between">
-                        <span>
-                          {author.name} ({author.email})
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-500">No authors added yet.</p>
-                )}
-              </div>
-              <div>
-                <button
-                  type="button"
-                  onClick={addAuthor}
-                  className="mt-2 rounded bg-blue-600 px-4 py-2 text-white"
-                >
-                  Add Author
-                </button>
-              </div>
-            </div>
 
-            <div className="flex flex-wrap">
-              <div className="w-full px-2 md:w-1/2">
-                <label className="mb-1 block">Author Name</label>
-                <input
-                  type="text"
-                  name="authorName"
-                  value={data.authorName}
-                  onChange={handleChange}
-                  className="w-full rounded border border-gray-300 p-2 text-gray-700"
-                />
-              </div>
-
-              <div className="w-full px-2 md:w-1/2">
-                <label className="mb-1 block">Author's Email Address</label>
-                <input
-                  type="email"
-                  name="authorEmail"
-                  value={data.authorEmail}
-                  onChange={handleChange}
-                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                  title="Please enter a valid email address"
-                  className="w-full rounded border border-gray-300 p-2 text-gray-700"
-                />
-                {emailError && (
-                  <p className="text-sm text-red-500">{emailError}</p>
-                )}
-              </div>
-            </div>
-          </div>
           <div>
             <label className="mb-1 block">Journal *</label>
             <input
@@ -347,25 +306,53 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
             />
           </div>
           <div>
-            <label className="mb-1 block">Data Source *</label>
+            <label className="mb-1 block">Data Source</label>
             <input
               type="text"
               name="dataSource"
               value={data.dataSource}
               onChange={handleChange}
               className="w-full rounded border border-gray-300 p-2 text-gray-700"
-              required
             />
           </div>
           <div>
-            <label className="mb-1 block">Sample Size *</label>
+            <label className="mb-1 block">Sample Size</label>
             <input
-              type="number"
+              type="text"
               name="sampleSize"
               value={data.sampleSize}
               onChange={handleChange}
               className="w-full rounded border border-gray-300 p-2 text-gray-700"
-              required
+            />
+          </div>
+          <div>
+            <label className="mb-1 block">Polulation</label>
+            <input
+              type="text"
+              name="population"
+              value={data.population}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block">Index</label>
+            <input
+              type="text"
+              name="index"
+              value={data.index}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block">PIRemarks</label>
+            <input
+              type="text"
+              name="piRemarks"
+              value={data.piRemarks}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
             />
           </div>
           <div>
@@ -374,6 +361,16 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
               type="text"
               name="doi"
               value={data.doi}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block">Feasibility of sharing:</label>
+            <input
+              type="text"
+              name="remark"
+              value={data.remark}
               onChange={handleChange}
               className="w-full rounded border border-gray-300 p-2 text-gray-700"
             />
@@ -389,7 +386,64 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
             />
           </div>
         </div>
+        <div className="col-span-2 rounded border border-gray-200 p-4">
+          <div className="flex justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">Authors' List</h2>
+              {data.authorsList.length > 0 ? (
+                <ul className="rounded border border-gray-300 p-2">
+                  {data.authorsList.map((author, index) => (
+                    <li key={index} className="flex justify-between">
+                      <span>
+                        {author.name} {author.email}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500">No authors added yet.</p>
+              )}
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={addAuthor}
+                className="mt-2 rounded bg-blue-600 px-4 py-2 text-white"
+              >
+                Add Author
+              </button>
+            </div>
+          </div>
 
+          <div className="flex flex-wrap">
+            <div className="w-full px-2 md:w-1/2">
+              <label className="mb-1 block">Author Name</label>
+              <input
+                type="text"
+                name="authorName"
+                value={data.authorName}
+                onChange={handleChange}
+                className="w-full rounded border border-gray-300 p-2 text-gray-700"
+              />
+            </div>
+
+            <div className="w-full px-2 md:w-1/2">
+              <label className="mb-1 block">Author's Email Address</label>
+              <input
+                type="email"
+                name="authorEmail"
+                value={data.authorEmail}
+                onChange={handleChange}
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                title="Please enter a valid email address"
+                className="w-full rounded border border-gray-300 p-2 text-gray-700"
+              />
+              {emailError && (
+                <p className="text-sm text-red-500">{emailError}</p>
+              )}
+            </div>
+          </div>
+        </div>
         <div className="mt-6 flex justify-center">
           <button
             type="submit"

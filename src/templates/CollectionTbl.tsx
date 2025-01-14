@@ -29,7 +29,6 @@ const DataPage: React.FC = () => {
     pidDepartment: '',
   });
 
-  // State to manage the visibility of advanced search options
   const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
 
   useEffect(() => {
@@ -60,18 +59,22 @@ const DataPage: React.FC = () => {
         searchTerm === '') &&
       (item.Title.toLowerCase().includes(filters.title.toLowerCase()) ||
         filters.title === '') &&
-      (item.DataSource.toLowerCase().includes(
-        filters.dataSource.toLowerCase(),
-      ) ||
+      ((item.DataSource &&
+        item.DataSource.toLowerCase().includes(
+          filters.dataSource.toLowerCase(),
+        )) ||
         filters.dataSource === '') &&
       (item.Journal.toLowerCase().includes(filters.journal.toLowerCase()) ||
         filters.journal === '') &&
-      (item.Year.toString().includes(filters.year) || filters.year === '') &&
-      (item.SampleSize.toString().includes(filters.sampleSize) ||
+      ((item.Year && item.Year.toString().includes(filters.year)) ||
+        filters.year === '') &&
+      ((item.SampleSize &&
+        item.SampleSize.toString().includes(filters.sampleSize)) ||
         filters.sampleSize === '') &&
-      (item.PrincipalInvestigator.toLowerCase().includes(
-        filters.principalInvestigator.toLowerCase(),
-      ) ||
+      ((item.PrincipalInvestigator &&
+        item.PrincipalInvestigator.toLowerCase().includes(
+          filters.principalInvestigator.toLowerCase(),
+        )) ||
         filters.principalInvestigator === '') &&
       (item.PIDepartment.toLowerCase().includes(
         filters.pidDepartment.toLowerCase(),
@@ -85,45 +88,26 @@ const DataPage: React.FC = () => {
   const currentData = filteredData.slice(startIndex, startIndex + itemsPerPage);
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
-  const exportToCSV = () => {
-    const csvContent = [
-      [
-        'Title',
-        'Journal',
-        'Data Source',
-        'Year',
-        'Sample Size',
-        'Principal Investigator (PI)',
-        'PI Department',
-        'DOI',
-      ].join(','),
-      ...filteredData.map((item) =>
-        [
-          item.Title,
-          item.Journal,
-          item.DataSource,
-          item.Year,
-          item.SampleSize,
-          item.PrincipalInvestigator,
-          item.PIDepartment,
-          item.DOI,
-        ].join(','),
-      ),
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'research_data.csv');
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    if (value === '' || /^[1-9]\d*$/.test(value)) {
+      setCurrentPage(Number(value));
+    }
   };
+  /*
+  const goToPage = () => {
+    const pageNumber = currentPage;
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      handlePageChange(pageNumber);
+    } else {
+      alert(`Please enter a valid page number between 1 and ${totalPages}`);
+    }
+  }; */
 
   return (
     <div className="container mx-auto bg-gray-50 p-6 text-gray-700">
@@ -159,12 +143,6 @@ const DataPage: React.FC = () => {
           <label className="toggle-label" htmlFor="toggle-advanced">
             <span className="toggle-span"></span>
           </label>
-          <button
-            onClick={exportToCSV}
-            className="ml-2 rounded bg-green-500 p-2 text-white transition hover:bg-green-600"
-          >
-            Export
-          </button>
         </div>
       </div>
 
@@ -201,7 +179,7 @@ const DataPage: React.FC = () => {
                   Principal Investigator (PI)
                 </th>
                 <th className="border border-gray-300 p-2">PI Department</th>
-                <th className="border border-gray-300 p-2">DOI</th>
+                {/* <th className="border border-gray-300 p-2">DOI</th> */}
                 <th className="border border-gray-300 p-2">Detailed Page</th>
               </tr>
             </thead>
@@ -229,7 +207,7 @@ const DataPage: React.FC = () => {
                   <td className="border border-gray-300 p-2 text-gray-800">
                     {item.PIDepartment}
                   </td>
-                  <td className="border border-gray-300 p-2 text-gray-800">
+                  {/* <td className="border border-gray-300 p-2 text-gray-800">
                     <a
                       href={item.DOI}
                       target="_blank"
@@ -238,7 +216,7 @@ const DataPage: React.FC = () => {
                     >
                       {item.DOI}
                     </a>
-                  </td>
+                  </td> */}
                   <td className="border border-gray-300 p-2 text-center text-gray-800">
                     <a
                       href={`${process.env.NEXT_PUBLIC_SUB_PATH}/detail/${item.Id}`}
@@ -271,37 +249,41 @@ const DataPage: React.FC = () => {
             </tbody>
           </table>
 
-          <div className="mt-4 flex items-center justify-between">
-            <div>
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className={`rounded px-3 py-1 ${currentPage === 1 ? 'bg-gray-300 text-gray-700' : 'bg-blue-500 text-white transition hover:bg-blue-400'}`}
-              >
-                Previous
-              </button>
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index}
-                  onClick={() => handlePageChange(index + 1)}
-                  className={`mx-1 rounded px-3 py-1 ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'} transition hover:bg-blue-400`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className={`rounded px-3 py-1 ${currentPage === totalPages ? 'bg-gray-300 text-gray-700' : 'bg-blue-500 text-white transition hover:bg-blue-400'}`}
-              >
-                Next
-              </button>
-            </div>
-            <div>
-              <span className="text-gray-700">
-                Page {currentPage} of {totalPages}
-              </span>
-            </div>
+          <div className="mt-4 flex items-center ">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`rounded px-3 py-1 ${currentPage === 1 ? 'bg-gray-300 text-gray-700' : 'bg-blue-500 text-white transition hover:bg-blue-400'}`}
+            >
+              Previous
+            </button>
+            <span className="mx-2">
+              Page {currentPage} of {totalPages}
+            </span>
+            <input
+              type="number"
+              value={currentPage}
+              onChange={handlePageInputChange}
+              className="mx-2 w-16 rounded border px-2 py-1"
+              min="1"
+              max={totalPages}
+            />
+            {/* }
+            <button
+              onClick={goToPage}
+              className="mx-2 rounded bg-blue-500 px-3 py-1 text-white transition hover:bg-blue-400"
+            >
+              Go
+            </button>
+            */}
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`rounded px-3 py-1 ${currentPage === totalPages ? 'bg-gray-300 text-gray-700' : 'bg-blue-500 text-white transition hover:bg-blue-400'}`}
+            >
+              Next
+            </button>
           </div>
         </>
       )}

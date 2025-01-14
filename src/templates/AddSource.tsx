@@ -13,18 +13,22 @@ interface Author {
 
 // Define the type for the form data
 interface FormData {
-  principalInvestigator: string;
-  piDepartment: string;
+  index: string;
+  journal: string;
   title: string;
   year: string;
+  abstract: string;
+  principalInvestigator: string;
+  piDepartment: string;
+  piRemarks: string;
+  dataSource: string;
+  population: string;
+  sampleSize: string;
+  remark: string;
+  doi: string;
   authorName: string;
   authorEmail: string;
   authorsList: Author[];
-  journal: string;
-  dataSource: string;
-  sampleSize: string;
-  doi: string;
-  abstract: string;
 }
 
 interface Department {
@@ -54,18 +58,22 @@ const AddDataPage: React.FC = () => {
     fetchDepartments();
   }, []);
   const [data, setData] = useState<FormData>({
-    principalInvestigator: '',
-    piDepartment: '',
+    index: '',
+    journal: '',
     title: '',
     year: '',
+    abstract: '',
+    principalInvestigator: '',
+    piDepartment: '',
+    piRemarks: '',
+    dataSource: '',
+    population: '',
+    sampleSize: '',
+    remark: '',
+    doi: '',
     authorName: '',
     authorEmail: '',
     authorsList: [],
-    journal: '',
-    dataSource: '',
-    sampleSize: '',
-    doi: '',
-    abstract: '',
   });
 
   const handleChange = (
@@ -85,9 +93,9 @@ const AddDataPage: React.FC = () => {
     return re.test(String(email).toLowerCase());
   }
   const addAuthor = () => {
-    if (data.authorName && data.authorEmail) {
+    if (data.authorName) {
       // Validate email format
-      if (!validateEmail(data.authorEmail)) {
+      if (data.authorEmail && !validateEmail(data.authorEmail)) {
         // Set the email error message
         setEmailError('Please enter a valid email address.');
         return;
@@ -119,16 +127,20 @@ const AddDataPage: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            principalInvestigator: data.principalInvestigator,
-            piDepartment: data.piDepartment,
+            index: data.index,
+            journal: data.journal,
             title: data.title,
             year: parseInt(data.year, 10), // Ensure year is a number
-            authors: data.authorsList,
-            journal: data.journal,
-            dataSource: data.dataSource,
-            sampleSize: parseInt(data.sampleSize, 10), // Ensure sample size is a number
-            doi: data.doi,
             abstract: data.abstract,
+            principalInvestigator: data.principalInvestigator,
+            piDepartment: data.piDepartment,
+            piRemarks: data.piRemarks,
+            dataSource: data.dataSource,
+            population: data.population,
+            sampleSize: data.sampleSize,
+            remark: data.remark,
+            doi: data.doi,
+            authors: data.authorsList,
           }),
         },
       );
@@ -139,18 +151,22 @@ const AddDataPage: React.FC = () => {
         toast.success('Data saved successfully!'); // Show success message
         // Optionally reset the form or show a success message
         setData({
-          principalInvestigator: '',
-          piDepartment: '',
+          index: '',
+          journal: '',
           title: '',
           year: '',
+          abstract: '',
+          principalInvestigator: '',
+          piDepartment: '',
+          piRemarks: '',
+          dataSource: '',
+          population: '',
+          sampleSize: '',
+          remark: '',
+          doi: '',
           authorName: '',
           authorEmail: '',
           authorsList: [],
-          journal: '',
-          dataSource: '',
-          sampleSize: '',
-          doi: '',
-          abstract: '',
         });
       } else {
         console.error(
@@ -236,6 +252,98 @@ const AddDataPage: React.FC = () => {
               required
             />
           </div>
+
+          <div>
+            <label className="mb-1 block">Journal *</label>
+            <input
+              type="text"
+              name="journal"
+              value={data.journal}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+              required
+            />
+          </div>
+          <div>
+            <label className="mb-1 block">Data Source</label>
+            <input
+              type="text"
+              name="dataSource"
+              value={data.dataSource}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block">Sample Size</label>
+            <input
+              type="text"
+              name="sampleSize"
+              value={data.sampleSize}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block">Polulation</label>
+            <input
+              type="text"
+              name="population"
+              value={data.population}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block">Index</label>
+            <input
+              type="text"
+              name="index"
+              value={data.index}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block">PIRemarks</label>
+            <input
+              type="text"
+              name="piRemarks"
+              value={data.piRemarks}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block">DOI</label>
+            <input
+              type="text"
+              name="doi"
+              value={data.doi}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block">Feasibility of sharing:</label>
+            <input
+              type="text"
+              name="remark"
+              value={data.remark}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+            />
+          </div>
+          <div className="col-span-2">
+            <label className="mb-1 block">Abstract</label>
+            <textarea
+              name="abstract"
+              value={data.abstract}
+              onChange={handleChange}
+              className="w-full rounded border border-gray-300 p-2 text-gray-700"
+              rows={5}
+            />
+          </div>
           <div className="col-span-2 rounded border border-gray-200 p-4">
             <div className="flex justify-between">
               <div>
@@ -245,7 +353,7 @@ const AddDataPage: React.FC = () => {
                     {data.authorsList.map((author, index) => (
                       <li key={index} className="flex justify-between">
                         <span>
-                          {author.name} ({author.email})
+                          {author.name} {author.email}
                         </span>
                       </li>
                     ))}
@@ -293,59 +401,6 @@ const AddDataPage: React.FC = () => {
                 )}
               </div>
             </div>
-          </div>
-          <div>
-            <label className="mb-1 block">Journal *</label>
-            <input
-              type="text"
-              name="journal"
-              value={data.journal}
-              onChange={handleChange}
-              className="w-full rounded border border-gray-300 p-2 text-gray-700"
-              required
-            />
-          </div>
-          <div>
-            <label className="mb-1 block">Data Source *</label>
-            <input
-              type="text"
-              name="dataSource"
-              value={data.dataSource}
-              onChange={handleChange}
-              className="w-full rounded border border-gray-300 p-2 text-gray-700"
-              required
-            />
-          </div>
-          <div>
-            <label className="mb-1 block">Sample Size *</label>
-            <input
-              type="number"
-              name="sampleSize"
-              value={data.sampleSize}
-              onChange={handleChange}
-              className="w-full rounded border border-gray-300 p-2 text-gray-700"
-              required
-            />
-          </div>
-          <div>
-            <label className="mb-1 block">DOI</label>
-            <input
-              type="text"
-              name="doi"
-              value={data.doi}
-              onChange={handleChange}
-              className="w-full rounded border border-gray-300 p-2 text-gray-700"
-            />
-          </div>
-          <div className="col-span-2">
-            <label className="mb-1 block">Abstract</label>
-            <textarea
-              name="abstract"
-              value={data.abstract}
-              onChange={handleChange}
-              className="w-full rounded border border-gray-300 p-2 text-gray-700"
-              rows={5}
-            />
           </div>
         </div>
 

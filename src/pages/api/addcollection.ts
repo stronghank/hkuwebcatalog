@@ -31,16 +31,20 @@ export default async function handler(
     console.log(req.body);
     try {
       const {
-        principalInvestigator,
-        piDepartment,
+        index,
+        journal,
         title,
         year,
-        authors,
-        journal,
-        dataSource,
-        sampleSize,
-        doi,
         abstract,
+        principalInvestigator,
+        piDepartment,
+        piRemarks,
+        dataSource,
+        population,
+        sampleSize,
+        remark,
+        doi,
+        authors,
       } = req.body;
 
       // Validate input
@@ -51,7 +55,7 @@ export default async function handler(
         typeof year !== 'number' ||
         typeof journal !== 'string' ||
         typeof dataSource !== 'string' ||
-        typeof sampleSize !== 'number' ||
+        typeof sampleSize !== 'string' ||
         typeof doi !== 'string'
       ) {
         return res.status(400).json({ message: 'Invalid input' });
@@ -60,34 +64,41 @@ export default async function handler(
       // Connect to the database
       await sql.connect(config as any);
       const ps = new sql.PreparedStatement();
-      ps.input('principalInvestigator', sql.VarChar);
-      ps.input('piDepartment', sql.VarChar);
+      ps.input('index', sql.Int);
+      ps.input('journal', sql.VarChar);
       ps.input('title', sql.VarChar);
       ps.input('year', sql.Int);
-      ps.input('authors', sql.NVarChar); // Using NVarChar for JSON string
-      ps.input('journal', sql.VarChar);
-      ps.input('dataSource', sql.VarChar);
-      ps.input('sampleSize', sql.Int);
-      ps.input('doi', sql.VarChar);
       ps.input('abstract', sql.VarChar);
-
+      ps.input('principalInvestigator', sql.VarChar);
+      ps.input('piDepartment', sql.VarChar);
+      ps.input('piRemarks', sql.VarChar);
+      ps.input('dataSource', sql.VarChar);
+      ps.input('population', sql.VarChar);
+      ps.input('sampleSize', sql.VarChar);
+      ps.input('remark', sql.VarChar);
+      ps.input('doi', sql.VarChar);
+      ps.input('authors', sql.NVarChar); // Using NVarChar for JSON string
       await ps.prepare(`
-        INSERT INTO collection (principalInvestigator, piDepartment, title, year, authors, journal, dataSource, sampleSize, doi, abstract)
-        VALUES (@principalInvestigator, @piDepartment, @title, @year, @authors, @journal, @dataSource, @sampleSize, @doi, @abstract)
+        INSERT INTO collection ("index",journal,title, year, abstract, principalInvestigator, piDepartment, piRemarks, dataSource, population, sampleSize, remark, doi, authors)
+        VALUES (@index, @journal, @title, @year, @abstract, @principalInvestigator, @piDepartment, @piRemarks, @dataSource, @population, @sampleSize, @remark, @doi, @authors)
       `);
 
       // Execute the statement with actual values
       await ps.execute({
-        principalInvestigator,
-        piDepartment,
+        index,
+        journal,
         title,
         year,
-        authors: JSON.stringify(authors), // Store authors as a JSON string
-        journal,
-        dataSource,
-        sampleSize,
-        doi,
         abstract,
+        principalInvestigator,
+        piDepartment,
+        piRemarks,
+        dataSource,
+        population,
+        sampleSize,
+        remark,
+        doi,
+        authors: authors ? JSON.stringify(authors) : '', // Store authors as a JSON string
       });
 
       return res.status(201).json({ message: 'Research entry created' });

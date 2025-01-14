@@ -61,18 +61,22 @@ const DataPage: React.FC = () => {
         searchTerm === '') &&
       (item.Title.toLowerCase().includes(filters.title.toLowerCase()) ||
         filters.title === '') &&
-      (item.DataSource.toLowerCase().includes(
-        filters.dataSource.toLowerCase(),
-      ) ||
+      ((item.DataSource &&
+        item.DataSource.toLowerCase().includes(
+          filters.dataSource.toLowerCase(),
+        )) ||
         filters.dataSource === '') &&
       (item.Journal.toLowerCase().includes(filters.journal.toLowerCase()) ||
         filters.journal === '') &&
-      (item.Year.toString().includes(filters.year) || filters.year === '') &&
-      (item.SampleSize.toString().includes(filters.sampleSize) ||
+      ((item.Year && item.Year.toString().includes(filters.year)) ||
+        filters.year === '') &&
+      ((item.SampleSize &&
+        item.SampleSize.toString().includes(filters.sampleSize)) ||
         filters.sampleSize === '') &&
-      (item.PrincipalInvestigator.toLowerCase().includes(
-        filters.principalInvestigator.toLowerCase(),
-      ) ||
+      ((item.PrincipalInvestigator &&
+        item.PrincipalInvestigator.toLowerCase().includes(
+          filters.principalInvestigator.toLowerCase(),
+        )) ||
         filters.principalInvestigator === '') &&
       (item.PIDepartment.toLowerCase().includes(
         filters.pidDepartment.toLowerCase(),
@@ -87,6 +91,13 @@ const DataPage: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    if (value === '' || /^[1-9]\d*$/.test(value)) {
+      setCurrentPage(Number(value));
+    }
   };
 
   const handleSelectToggle = (id: number) => {
@@ -248,7 +259,7 @@ const DataPage: React.FC = () => {
                   Principal Investigator (PI)
                 </th>
                 <th className="border border-gray-300 p-2">PI Department</th>
-                <th className="border border-gray-300 p-2">DOI</th>
+                {/* <th className="border border-gray-300 p-2">DOI</th> */}
                 <th className="border border-gray-300 p-2">Edit</th>
               </tr>
             </thead>
@@ -283,6 +294,7 @@ const DataPage: React.FC = () => {
                   <td className="border border-gray-300 p-2 text-gray-800">
                     {item.PIDepartment}
                   </td>
+                  {/*
                   <td className="border border-gray-300 p-2 text-gray-800">
                     <a
                       href={item.DOI}
@@ -292,7 +304,7 @@ const DataPage: React.FC = () => {
                     >
                       {item.DOI}
                     </a>
-                  </td>
+                  </td> */}
                   <td className="border border-gray-300 p-2 text-center text-gray-800">
                     <button
                       onClick={() => handleEditClick(item.Id)}
@@ -325,37 +337,41 @@ const DataPage: React.FC = () => {
             </tbody>
           </table>
 
-          <div className="mt-4 flex items-center justify-between">
-            <div>
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className={`rounded px-3 py-1 ${currentPage === 1 ? 'bg-gray-300 text-gray-700' : 'bg-blue-500 text-white transition hover:bg-blue-400'}`}
-              >
-                Previous
-              </button>
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index}
-                  onClick={() => handlePageChange(index + 1)}
-                  className={`mx-1 rounded px-3 py-1 ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'} transition hover:bg-blue-400`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className={`rounded px-3 py-1 ${currentPage === totalPages ? 'bg-gray-300 text-gray-700' : 'bg-blue-500 text-white transition hover:bg-blue-400'}`}
-              >
-                Next
-              </button>
-            </div>
-            <div>
-              <span className="text-gray-700">
-                Page {currentPage} of {totalPages}
-              </span>
-            </div>
+          <div className="mt-4 flex items-center ">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`rounded px-3 py-1 ${currentPage === 1 ? 'bg-gray-300 text-gray-700' : 'bg-blue-500 text-white transition hover:bg-blue-400'}`}
+            >
+              Previous
+            </button>
+            <span className="mx-2">
+              Page {currentPage} of {totalPages}
+            </span>
+            <input
+              type="number"
+              value={currentPage}
+              onChange={handlePageInputChange}
+              className="mx-2 w-16 rounded border px-2 py-1"
+              min="1"
+              max={totalPages}
+            />
+            {/* }
+            <button
+              onClick={goToPage}
+              className="mx-2 rounded bg-blue-500 px-3 py-1 text-white transition hover:bg-blue-400"
+            >
+              Go
+            </button>
+            */}
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`rounded px-3 py-1 ${currentPage === totalPages ? 'bg-gray-300 text-gray-700' : 'bg-blue-500 text-white transition hover:bg-blue-400'}`}
+            >
+              Next
+            </button>
           </div>
         </>
       )}
