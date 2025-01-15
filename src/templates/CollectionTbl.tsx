@@ -6,7 +6,7 @@ interface ResearchData {
   Journal: string;
   DataSource: string;
   Year: number;
-  SampleSize: number;
+  SampleSize: string;
   PrincipalInvestigator: string;
   PIDepartment: string;
   DOI: string;
@@ -56,6 +56,17 @@ const DataPage: React.FC = () => {
   const filteredData = data.filter((item) => {
     return (
       (item.Title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.DataSource &&
+          item.DataSource.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        item.Journal.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.Year && item.Year.toString().includes(searchTerm)) ||
+        (item.SampleSize &&
+          item.SampleSize.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (item.PrincipalInvestigator &&
+          item.PrincipalInvestigator.toLowerCase().includes(
+            searchTerm.toLowerCase(),
+          )) ||
+        item.PIDepartment.toLowerCase().includes(searchTerm.toLowerCase()) ||
         searchTerm === '') &&
       (item.Title.toLowerCase().includes(filters.title.toLowerCase()) ||
         filters.title === '') &&
@@ -69,7 +80,9 @@ const DataPage: React.FC = () => {
       ((item.Year && item.Year.toString().includes(filters.year)) ||
         filters.year === '') &&
       ((item.SampleSize &&
-        item.SampleSize.toString().includes(filters.sampleSize)) ||
+        item.SampleSize.toLowerCase().includes(
+          filters.sampleSize.toLowerCase(),
+        )) ||
         filters.sampleSize === '') &&
       ((item.PrincipalInvestigator &&
         item.PrincipalInvestigator.toLowerCase().includes(
@@ -90,13 +103,20 @@ const DataPage: React.FC = () => {
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
+    } else {
+      setCurrentPage(1);
     }
   };
 
   const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    if (value === '' || /^[1-9]\d*$/.test(value)) {
+    if (/^[1-9]\d*$/.test(value)) {
       setCurrentPage(Number(value));
+    } else {
+      setCurrentPage(1);
+    }
+    if (currentPage >= totalPages) {
+      setCurrentPage(1);
     }
   };
   /*
@@ -121,7 +141,10 @@ const DataPage: React.FC = () => {
             type="text"
             placeholder="Enter Keywords..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
             className="mr-2 w-full rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 md:w-3/4"
           />
           <button
@@ -154,9 +177,10 @@ const DataPage: React.FC = () => {
               type="text"
               placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
               value={filters[key as keyof typeof filters]}
-              onChange={(e) =>
-                setFilters({ ...filters, [key]: e.target.value })
-              }
+              onChange={(e) => {
+                setFilters({ ...filters, [key]: e.target.value });
+                setCurrentPage(1);
+              }}
               className="rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           ))}
