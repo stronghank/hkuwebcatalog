@@ -117,7 +117,7 @@ const DetailedPage: React.FC<DetailedPageProps> = ({ id }) => {
           className="rounded bg-green-500 px-4 py-2 text-white"
           // eslint-disable-next-line no-return-assign
           onClick={() =>
-            (window.location.href = `${process.env.NEXT_PUBLIC_SUB_PATH}/managesource`)
+            (window.location.href = `${process.env.NEXT_PUBLIC_SUB_PATH}/collection`)
           }
         >
           Back to Library Collection
