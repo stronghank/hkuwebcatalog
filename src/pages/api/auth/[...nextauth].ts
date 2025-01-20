@@ -1,11 +1,16 @@
-/* eslint-disable unused-imports/no-unused-vars */
-/* eslint-disable no-param-reassign */
+
 import axios from 'axios';
-import type { NextAuthOptions, Profile } from 'next-auth/index';
+import type { NextAuthOptions, Profile } from 'next-auth';
+import NextAuth from 'next-auth';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 
-const ALLOWED_ROLES = ['QA_Role_docnum_admin', 'QA_Role_HKUMedStaff'];
-const ADMIN_ROLE = 'QA_Role_docnum_admin';
+const ALLOWED_ROLES = [
+  'Role_Webcatalog_Library_Admin',
+  'Role_Webcatalog_HKUMed',
+  'Role_Webcatalog_System_Admin',
+];
+const ADMIN_ROLE = 'Role_Webcatalog_Library_Admin';
+const SYS_ADMIN_ROLE = 'Role_Webcatalog_System_Admin';
 
 // Extend the Profile type
 interface KeycloakProfile extends Profile {
@@ -21,7 +26,7 @@ async function getAdminAccessToken() {
   params.append('grant_type', 'client_credentials');
   try {
     const response = await axios.post(tokenUrl, params);
-    return response.data.access_token;
+    return (response.data as any).access_token;
   } catch (error) {
     console.error('Error getting admin access token:', error);
     return null;
@@ -76,7 +81,7 @@ export const authOptions: NextAuthOptions = {
         if (keycloakProfile.sub) {
           const adminAccessToken = await getAdminAccessToken();
           if (adminAccessToken) {
-            const userData = await fetchAdditionalUserInfo(
+            const userData: any = await fetchAdditionalUserInfo(
               keycloakProfile.sub,
               adminAccessToken,
             );
@@ -87,7 +92,7 @@ export const authOptions: NextAuthOptions = {
                 userData.attributes?.Name?.[0] || keycloakProfile.name;
             }
 
-            const userRoles = await fetchUserRoles(
+            const userRoles: any = await fetchUserRoles(
               keycloakProfile.sub,
               adminAccessToken,
             );
@@ -135,7 +140,7 @@ export const authOptions: NextAuthOptions = {
       if (keycloakProfile.sub) {
         const adminAccessToken = await getAdminAccessToken();
         if (adminAccessToken) {
-          const userRoles = await fetchUserRoles(
+          const userRoles: any = await fetchUserRoles(
             keycloakProfile.sub,
             adminAccessToken,
           );
@@ -148,7 +153,7 @@ export const authOptions: NextAuthOptions = {
               ALLOWED_ROLES.includes(role),
             );
             if (!hasAllowedRole) {
-              return '/docnum/auth/access-denied';
+              return `${process.env.NEXT_PUBLIC_SUB_PATH}/auth/access-denied`;
             }
           }
         }
@@ -157,9 +162,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    error: '/auth/error',
+    error: `${process.env.NEXT_PUBLIC_SUB_PATH}/auth/error`,
   },
 };
 
-// const handler = NextAuth(authOptions);
-// export { handler as GET, handler as POST };
+export default NextAuth(authOptions);

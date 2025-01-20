@@ -1,4 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 
 import { Background } from '../background/Background';
@@ -9,6 +11,7 @@ import { Logo } from './Logo';
 const Hero = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const handleLogin = () => {
+    signIn('keycloak', { callbackUrl: `${process.env.NEXT_PUBLIC_SUB_PATH}/` });
     setIsLoggedIn(true);
   };
 
