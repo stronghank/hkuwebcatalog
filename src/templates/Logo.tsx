@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 // import router from 'next/router';
 type ILogoProps = {
   xl?: boolean;
