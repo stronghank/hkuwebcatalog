@@ -1,5 +1,6 @@
 import className from 'classnames';
 import { useRouter } from 'next/router';
+import Image from 'next/image'
 
 type ILandingPageRowProps = {
   title?: string;

@@ -1,6 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
 /* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable prettier/prettier */
 /* eslint-disable global-require */
 /* eslint-disable consistent-return */
 import { ConnectionPool } from 'mssql';
