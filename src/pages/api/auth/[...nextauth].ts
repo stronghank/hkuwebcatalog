@@ -162,9 +162,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    error: `/hkuwebcatalog/api/auth/error`,
-    signIn: '/hkuwebcatalog/auth/signin',
-    signOut: '/hkuwebcatalog',
+    error: `${process.env.NEXT_PUBLIC_SUB_PATH}/api/auth/error`,
+    signIn: `${process.env.NEXT_PUBLIC_SUB_PATH}hkuwebcatalog/api/auth/signin`,
   },
 };
 
