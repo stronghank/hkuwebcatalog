@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
-
+import { useRouter } from 'next/navigation';
 import { Background } from '../background/Background';
 import { Section } from '../layout/Section';
 import { NavbarTwoColumns } from '../navigation/NavbarTwoColumns';
@@ -10,8 +10,11 @@ import { Logo } from './Logo';
 
 const Hero = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+
   const handleLogin = () => {
-    signIn('keycloak', { callbackUrl: `${process.env.NEXT_PUBLIC_SUB_PATH}/` });
+    //signIn('keycloak', { callbackUrl: '/hkuwebcatalog'});
+    router.push("/auth/login");
     setIsLoggedIn(true);
   };
 
