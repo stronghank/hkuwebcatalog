@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface ResearchData {
   Id: number;
@@ -17,8 +19,9 @@ const DataPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
-
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [filters, setFilters] = useState({
     title: '',
     dataSource: '',
@@ -30,6 +33,11 @@ const DataPage: React.FC = () => {
   });
 
   const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/access-denied");
+    }
+  }, [router, status]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,7 +53,6 @@ const DataPage: React.FC = () => {
         setError(err instanceof Error ? err.message : 'An error occurred');
       }
     };
-
     fetchData();
   }, []);
 
@@ -128,7 +135,10 @@ const DataPage: React.FC = () => {
       alert(`Please enter a valid page number between 1 and ${totalPages}`);
     }
   }; */
-
+  if (status === "unauthenticated") {
+    return null;
+  }
+  
   return (
     <div className="container mx-auto bg-gray-50 p-6 text-gray-700">
       <h1 className="mb-4 text-4xl font-bold text-gray-800">

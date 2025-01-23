@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 // Define the data structure type
 interface ResearchData {
@@ -26,7 +28,13 @@ interface DetailedPageProps {
 
 const DetailedPage: React.FC<DetailedPageProps> = ({ id }) => {
   const [data, setData] = useState<ResearchData | null>(null);
-
+  const {data: session, status } = useSession();
+  const router = useRouter(); 
+    useEffect(() => {
+        if (status === "unauthenticated") {
+          router.push("/auth/access-denied");
+        }
+      }, [router, status]);
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
@@ -48,7 +56,9 @@ const DetailedPage: React.FC<DetailedPageProps> = ({ id }) => {
   if (!data) {
     return <div className="text-center">Loading...</div>;
   }
-
+  if (status === "unauthenticated") {
+    return null;
+  }
   return (
     <div className="mx-auto max-w-5xl rounded-lg border border-gray-300 bg-white p-6 text-gray-700 shadow-md">
       <div className="mb-4 text-center">

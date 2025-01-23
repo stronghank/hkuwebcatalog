@@ -5,6 +5,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import React, { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+
 // Define the type for authors
 interface Author {
   name: string;
@@ -39,6 +42,13 @@ interface Department {
 
 const AddDataPage: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/access-denied");
+    }
+  }, [router, status]);
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -180,7 +190,9 @@ const AddDataPage: React.FC = () => {
       console.error('Error while saving data:', error);
     }
   };
-
+  if (status === "unauthenticated") {
+    return null;
+  }
   return (
     <div className="mx-auto max-w-5xl p-6 text-white">
       <div className="flex items-center justify-between">

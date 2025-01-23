@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { toast, ToastContainer } from 'react-toastify';
-
+import { useSession } from 'next-auth/react';
 // Define the type for authors
 interface Author {
   name: string;
@@ -58,8 +58,15 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
     authorEmail: '',
     authorsList: [],
   });
-
+  
   const [departments, setDepartments] = useState<Department[]>([]);
+  const { data: session, status } = useSession();
+  const router = useRouter(); 
+  useEffect(() => {
+      if (status === "unauthenticated") {
+        router.push("/auth/access-denied");
+      }
+    }, [router, status]);
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -78,9 +85,6 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
 
     fetchDepartments();
   }, []);
-
-  const router = useRouter(); // Initialize router
-
   // Fetch data on component mount
   useEffect(() => {
     const fetchData = async () => {
@@ -220,7 +224,9 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
       toast.error('Error while saving data. Please check your connection.'); // Show error notification
     }
   };
-
+  if (status === "unauthenticated") {
+    return null;
+  }
   return (
     <div className="mx-auto max-w-5xl p-6 text-white">
       <ToastContainer /> {/* Container for toast notifications */}

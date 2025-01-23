@@ -2,6 +2,8 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { useEffect, useState } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface ResearchData {
   Id: number;
@@ -21,6 +23,8 @@ const DataPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [filters, setFilters] = useState({
     title: '',
     dataSource: '',
@@ -32,6 +36,12 @@ const DataPage: React.FC = () => {
   });
   const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/access-denied");
+    }
+  }, [router, status]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -185,7 +195,9 @@ const DataPage: React.FC = () => {
   const handleEditClick = (id: number) => {
     window.location.href = `${process.env.NEXT_PUBLIC_SUB_PATH}/edit/${id}`; // Navigate to the edit page
   };
-
+  if (status === "unauthenticated") {
+    return null;
+  }
   return (
     <div className="container mx-auto bg-gray-50 p-6 text-gray-700">
       <h1 className="mb-4 text-4xl font-bold text-gray-800">
