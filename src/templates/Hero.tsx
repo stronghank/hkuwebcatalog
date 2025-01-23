@@ -22,7 +22,7 @@ const Hero = () => {
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
-    router.push("/auth/login");
+    router.push("/");
   };
 
   useEffect(() => {

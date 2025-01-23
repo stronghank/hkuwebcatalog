@@ -119,7 +119,7 @@ export const authOptions: NextAuthOptions = {
               }
 
               // Set isAdmin flag
-              token.isAdmin = (token as any).roles.includes(ADMIN_ROLE);
+              token.isAdmin = (token as any).roles.includes(ADMIN_ROLE) || (token as any).roles.includes(SYS_ADMIN_ROLE);
             }
           } else {
             console.error('Failed to obtain admin access token');
