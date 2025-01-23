@@ -68,6 +68,11 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.NEXT_KEYCLOAK_ID!,
       clientSecret: process.env.NEXT_KEYCLOAK_SECRET!,
       issuer: process.env.NEXT_KEYCLOAK_ISSUER,
+      authorization: {
+        params: {
+          prompt: 'login', 
+        },
+      },
     }),
   ],
   callbacks: {
