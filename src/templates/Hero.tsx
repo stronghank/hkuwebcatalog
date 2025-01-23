@@ -65,7 +65,7 @@ const Hero = () => {
             </li>
             <li className="ml-auto">
               {isLoggedIn ? (
-                <><span className="text-white">Welcome, {session?.user?.name}!</span><button onClick={handleLogout} className="text-white">
+                <><span className="text-white">Hi, {session?.user?.name}!</span><button onClick={handleLogout} className="text-white mx-4">
                   Logout
                 </button></>
               ) : (
