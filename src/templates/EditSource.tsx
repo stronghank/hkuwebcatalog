@@ -63,10 +63,10 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
   const { data: session, status } = useSession();
   const router = useRouter(); 
   useEffect(() => {
-      if (status === "unauthenticated") {
+      if (status === "unauthenticated" || session?.user?.isAdmin === false) {
         router.push("/auth/access-denied");
       }
-    }, [router, status]);
+    }, [router, session?.user?.isAdmin, status]);
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -224,7 +224,7 @@ const AddDataPage: React.FC<{ id: string }> = ({ id }) => {
       toast.error('Error while saving data. Please check your connection.'); // Show error notification
     }
   };
-  if (status === "unauthenticated") {
+  if (status === "unauthenticated" || session?.user?.isAdmin === false) {
     return null;
   }
   return (

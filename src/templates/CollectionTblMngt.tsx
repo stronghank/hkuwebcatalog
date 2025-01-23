@@ -38,10 +38,10 @@ const DataPage: React.FC = () => {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (status === "unauthenticated" || session?.user?.isAdmin === false) {
       router.push("/auth/access-denied");
     }
-  }, [router, status]);
+  }, [router, session?.user?.isAdmin, status]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -195,7 +195,7 @@ const DataPage: React.FC = () => {
   const handleEditClick = (id: number) => {
     window.location.href = `${process.env.NEXT_PUBLIC_SUB_PATH}/edit/${id}`; // Navigate to the edit page
   };
-  if (status === "unauthenticated") {
+  if (status === "unauthenticated" || session?.user?.isAdmin === false) {
     return null;
   }
   return (

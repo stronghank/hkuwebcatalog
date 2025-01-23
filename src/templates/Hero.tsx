@@ -55,7 +55,7 @@ const Hero = () => {
             </li>
             <li>
               <Link className="text-white" href="/guide">
-                Guidelines & Useful Materials
+                Useful Materials
               </Link>
             </li>
             <li>
