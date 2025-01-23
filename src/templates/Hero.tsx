@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
+import { signOut } from "next-auth/react";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Background } from '../background/Background';
@@ -16,13 +17,12 @@ const Hero = () => {
   const router = useRouter();
 
   const handleLogin = () => {
-    //signIn('keycloak', { callbackUrl: '/hkuwebcatalog'});
     router.push("/auth/login");
-    setIsLoggedIn(true);
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    router.push("/");
   };
 
   useEffect(() => {
@@ -65,9 +65,9 @@ const Hero = () => {
             </li>
             <li className="ml-auto">
               {isLoggedIn ? (
-                <button onClick={handleLogout} className="text-white">
+                <><span className="text-white">Welcome, {session?.user?.name}!</span><button onClick={handleLogout} className="text-white">
                   Logout
-                </button>
+                </button></>
               ) : (
                 <button onClick={handleLogin} className="text-white">
                   Login
