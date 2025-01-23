@@ -7,8 +7,11 @@ import { Background } from '../background/Background';
 import { Section } from '../layout/Section';
 import { NavbarTwoColumns } from '../navigation/NavbarTwoColumns';
 import { Logo } from './Logo';
+import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 
 const Hero = () => {
+  const { data: session, status } = useSession();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
@@ -21,6 +24,14 @@ const Hero = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
   };
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      setIsLoggedIn(false);;
+    }else{
+      setIsLoggedIn(true);
+    }
+  }, [status]);
 
   return (
     <Background color="bg-teal-700">
